@@ -19,14 +19,14 @@ function handleQuery(err, res) {
   client.end()
 }
 
-const insertData = `insert into messages values (4, 'bon voyage!')`
-client.query(insertData)
+// const insertData = `insert into messages values (4, 'bon voyage!')`
+// client.query(insertData)
 
-const updateData = `update messages set content = 'go away already', messages_id = 5 where messages_id = 1`
-client.query(updateData)
+// const updateData = `update messages set content = 'go away already', messages_id = 5 where messages_id = 1`
+// client.query(updateData)
 
-const deleteData = `delete from messages where messages_id = 4`
-client.query(deleteData)
+// const deleteData = `delete from messages where messages_id = 4`
+// client.query(deleteData)
 
 const fetchAllData = `select * from messages`
 client.query(fetchAllData, handleQuery)
