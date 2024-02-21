@@ -5,11 +5,11 @@ const Hapi = require('@hapi/hapi')
 const init = async () => {
   const server = Hapi.server({
     port: 3001,
-    host: 'localhost'
+    host: '0.0.0.0'
   })
 
   server.route({
-    method: '*', // could simply be GET, but * just means any HTTP method can be used
+    method: '*',
     path: '/',
     handler: (request, h) => {
       return 'Hello World!'
