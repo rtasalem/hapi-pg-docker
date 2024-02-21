@@ -1,6 +1,6 @@
 # Hapi.js + PostgreSQL + Docker
 ## Background
-This repo was created as practice for learning to Dockerise both a Hapi.js server & PostgreSQL database. The server was set up to allow for communication with the database and allow for read/write functionality. More [in-depth documentation](https://github.com/rtasalem/hapi-pg-docker/blob/005-documentation/PROJECT-DOCS.md) for the project has also been made available.
+This repo was created as practice for learning to Dockerise both a Hapi.js server & PostgreSQL database. The server was set up to allow for communication with the database and allow for read/write functionality. More [in-depth documentation](https://github.com/rtasalem/hapi-pg-docker/blob/DOCS.md) for the project has also been made available.
 ## Libraries & Technologies
 - [Docker](https://docs.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
 - [Node.js](https://nodejs.org/en)
@@ -14,3 +14,4 @@ This repo was created as practice for learning to Dockerise both a Hapi.js serve
 ## Getting Started
 - Run `docker compose up --build` and wait for the image to build.
 - Confirm the server is running on `localhost:3001` and the message `Hello World!` is visible and ensure the container is running.
+- To ensure connection to the database is successful, navigate into the `app` directory and run `node database` in the terminal. Note if an empty array is returned, the connection was successful, there is just no existing data to be returned. Use the queries to insert, update, and delete data.
