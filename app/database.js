@@ -10,23 +10,17 @@ const client = new Client({
 
 client.connect();
 
+function handleQuery(err, res) {
+  if (!err) {
+    console.log(res.rows)
+  } else {
+    console.log(err.message)
+  }
+  client.end()
+}
+
+const insertData = `insert into messages values (3, 'your call is important to us')`
+client.query(insertData)
+
 const fetchAllData = `select * from messages`
-const insertData = `insert into messages values (2, 'boo!')`
-
-client.query(insertData, (err, res) => {
-  if (!err) {
-    console.log(res.rows)
-  } else {
-    console.log(err.message)
-  }
-  client.end()
-})
-
-client.query(fetchAllData, (err, res) => {
-  if (!err) {
-    console.log(res.rows)
-  } else {
-    console.log(err.message)
-  }
-  client.end()
-})
+client.query(fetchAllData, handleQuery)
