@@ -23,4 +23,7 @@ COPY . .
 CMD ["node", "index"]
 ```
 ## Docker Compose Configuration
+Within the `docker-compose.yaml` file, two `services` have been defined: the server (`hapi-server`) and database (`hapi-pg-docker-postgres`). The server will `build` the Docker image from the current directory (`.`) and will be exposed on port `3001`. Through Docker Compose, we specify that the server `depends_on` the PostgreSQL database provided by the service named `hapi-pg-docker-postgres`. To connect to the database, environment variables have been decarled including the database name (`POSTGRES_DB`), host (`POSTGRES_HOST`), username (`POSTGRES_USERNAME`), password (`POSTGRES_PASSWORD`), port (`POSTGRES_PORT`), and a schema name (`POSTGRES_SCHEMA_NAME`). By specifying the `volumes` under `hapi-server`, the current directory (and the source code) is mounted into the container.
+<br><br>
+The `hapi-pg-docker-postgres` service pulls the official PostgreSQL Docker image, exposing it on port `5432`. The necessary environment vairables for this service include the database name (`POSTGRES_DB`), username (`POSTGRES_USERNAME`), and a password (`POSTGRES_PASSWORD`). A volume is mounted to ensure that the data from the database persists regardless of whether the container is stopped or removed. Overall, the Docker Compose configuration sets up a development environment for a Hapi.js server application with a PostgreSQL database, allowing for easy management and deployment of both services.
 ## Establish PostgreSQL Database Connection
