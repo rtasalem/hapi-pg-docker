@@ -9,4 +9,18 @@ In the `index.js` file, [set up a Hapi.js server](https://hapi.dev/tutorials/get
 To assemble the image that will make up the Node environment of the application, [create a Dockerfile in the root directory](https://www.docker.com/blog/getting-started-with-docker-using-node-jspart-i/). The Dockerfile must include the following:
 - The base image `FROM` Docker that will be used for the application (`FROM node:latest`).
 - The creation of a `WORKDIR` that will act as the default location for commands set within the Dockerfile (`WORKDIR /app`).
-- Ensure you `COPY` both the `package.json` and `package-lock.json` into the image. To accomplish this, two parameters need to b
+- Ensure you `COPY` both the `package.json` and `package-lock.json` into the image. To accomplish this, two parameters need to be specified: the file to be copied and its destincation (`COPY package*.json ./`).
+- Once the `package.json` and `package-lock.json` files have been copied into the root directory, the next step is to `RUN` the `npm install` command (`RUN npm install`).
+- After the base image and dependencies are all set up/installed, we need to `COPY` the source code from the current directory into the image (`COPY . .`).
+- The last step is to tell Docker what `CMD` to run once the image itself is running inside the container.
+At the end, the Dockerfile will look like this:
+```
+FROM node:latest
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+CMD ["node", "index"]
+```
+## Docker Compose Configuration
+## Establish PostgreSQL Database Connection
