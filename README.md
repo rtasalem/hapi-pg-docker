@@ -12,5 +12,5 @@ This repo was created as practice for learning to Dockerise both a Hapi.js serve
 - Defining a Hapi.js server & PostgreSQL database using Docker Compose.
 - Establishing a connection to a PostgreSQL database using the [node-postgres NPM package](https://www.npmjs.com/package/pg).
 ## Getting Started
-- Run `docker compose up --build` to build the image.
-- Confirm the server is running on `localhost:3001` and the message `Hello World!` is visible.
+- Run `docker compose up --build` and wait for the image to build.
+- Confirm the server is running on `localhost:3001` and the message `Hello World!` is visible and ensure the container is running.
