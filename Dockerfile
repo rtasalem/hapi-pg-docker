@@ -4,4 +4,4 @@ COPY package*.json package*.json ./
 # copy both package.json & package-lock.json
 RUN npm install
 COPY . .
-CMD ["node", "index.js"]
+CMD ["node", "app/index.js"]
