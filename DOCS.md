@@ -27,3 +27,6 @@ Within the `docker-compose.yaml` file, two `services` have been defined: the ser
 <br><br>
 The `hapi-pg-docker-postgres` service pulls the official PostgreSQL Docker image, exposing it on port `5432`. The necessary environment vairables for this service include the database name (`POSTGRES_DB`), username (`POSTGRES_USERNAME`), and a password (`POSTGRES_PASSWORD`). A volume is mounted to ensure that the data from the database persists regardless of whether the container is stopped or removed. Overall, the Docker Compose configuration sets up a development environment for a Hapi.js server application with a PostgreSQL database, allowing for easy management and deployment of both services.
 ## Establish PostgreSQL Database Connection
+- write instructions for accessing pg db from terminal (docker exec, psql, create table, insert into etc.)
+- mention npm install pg (node-postgres)
+- dicuss setup of queries

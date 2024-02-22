@@ -1,6 +1,6 @@
 # Hapi.js + PostgreSQL + Docker
 ## Background
-This repo was created as practice for learning to Dockerise both a Hapi.js server & PostgreSQL database. The server was set up to allow for communication with the database and allow for read/write functionality.
+This repo was created as practice for learning to Dockerise both a Hapi.js server & PostgreSQL database. The server was set up to allow for communication with the database and enable read/write functionality.
 ## Libraries & Technologies
 - [Docker](https://docs.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
 - [Node.js](https://nodejs.org/en)
