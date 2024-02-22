@@ -51,4 +51,12 @@ create table <table_name> (
 *Note this section will specifically refer to pgAdmin 4 as a database management tool for Postgres.*<br>
 After [installing pgAdmin 4 locally](https://www.pgadmin.org/download/) and opening the application, navigate to the dashboard and select `Add New Server`. Any `Name` can be given to the server under the `General` tab. Under the `Connection` tab, enter `localhost` as the `Host name/address`, ensure the `Port` is set to the default value (`5432`), and enter the same password that was specified in the `docker-compose.yaml` file. Click `Save` and the server should be set up immediately after. Navigate to the database you created earlier and the table(s) that were created for it. By right clicking on the table name you can view all the rows of existing data (if there is any). If successful, we now have our database visible on pgAdmin 4.
 ### Connecting Node App to Postgres
-To connect the Node application with the PostgreSQL, the [node-postgres NPM package needs to be installed](https://www.npmjs.com/package/pg). Using the [official documentation](https://node-postgres.com/apis/client) for this package, we can interface with out Dockerised Postgres database.
+To connect the Node application with the PostgreSQL, the [node-postgres NPM package needs to be installed](https://www.npmjs.com/package/pg)(`npm install pg`). Using the [official documentation](https://node-postgres.com/apis/client) for this package, we can interface with out Dockerised Postgres database.
+<br><br>
+Within the `app` directory, create a new file called `database.js`. Import `Client` from `pg` and create a client with all the connection information needed:
+- The `host` will be `localhost` (this was specified in pgAdmin 4 when adding a new server).
+- The `user` will take the same argument as the `POSTGRES_USERNAME` defined in the `docker-compose.yaml` file.
+- Like `user`, the `password` will also take the same value as defined by Docker Compose.
+- The `port` is the default Postgres port: `5432`.
+- `database` will be the database name that was used when creating the database via the terminal.
+Now that the client is set up, both the connection and queries can be written. 
