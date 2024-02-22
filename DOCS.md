@@ -26,7 +26,29 @@ CMD ["node", "index"]
 Within the `docker-compose.yaml` file, two `services` have been defined: the server (`hapi-server`) and database (`hapi-pg-docker-postgres`). The server will `build` the Docker image from the current directory (`.`) and will be exposed on port `3001`. Through Docker Compose, we specify that the server `depends_on` the PostgreSQL database provided by the service named `hapi-pg-docker-postgres`. To connect to the database, environment variables have been decarled including the database name (`POSTGRES_DB`), host (`POSTGRES_HOST`), username (`POSTGRES_USERNAME`), password (`POSTGRES_PASSWORD`), port (`POSTGRES_PORT`), and a schema name (`POSTGRES_SCHEMA_NAME`). By specifying the `volumes` under `hapi-server`, the current directory (and the source code) is mounted into the container.
 <br><br>
 The `hapi-pg-docker-postgres` service pulls the official PostgreSQL Docker image, exposing it on port `5432`. The necessary environment vairables for this service include the database name (`POSTGRES_DB`), username (`POSTGRES_USERNAME`), and a password (`POSTGRES_PASSWORD`). A volume is mounted to ensure that the data from the database persists regardless of whether the container is stopped or removed. Overall, the Docker Compose configuration sets up a development environment for a Hapi.js server application with a PostgreSQL database, allowing for easy management and deployment of both services.
+
+## Starting Up the Container
+With Dockerfile and Docker Compose configured, run `docker compose up --build` to build the images specified by Docker Compose and started the container(s). Ensure the containers are running via Docker Desktop or check `localhost:3001` via the browser is returning `Hello World!`.
 ## Establish PostgreSQL Database Connection
-- write instructions for accessing pg db from terminal (docker exec, psql, create table, insert into etc.)
-- mention npm install pg (node-postgres)
-- dicuss setup of queries
+### Accessing PostgreSQL via Terminal
+Now that the Postgres database is set up and the containers are running, we'll need to create a database and at least one table. Via the terminal, run `docker exec -it <CONTAINER_ID> bash` (this will simulate a shell environment for the container). Replace <CONTAINER_ID> with the container's true ID (this can be found by running `docker ps`). Once shelled inside the container, run `psql -U <POSTGRES_USERNAME>` to access Postgres as a specific user. `<POSTGRES_USERNAME>` should be replaced with the username specified in the `docker-compose.yaml` file.
+<br><br>
+Below are the instructions for creating a database, connecting to the database, and creating a table inside of the database via the terminal:
+1. Create a database:<br>
+`create database <database_name>;`
+2. Connect to the database:<br>
+`\c <database_name>;`
+3. Create a table inside the database:
+``` 
+create table <table_name> (
+  <primary_key> int not null,
+  <column_name> varchar(250) not null
+);
+```
+4. You can test the table has been properly create by inserting some dummy data.
+
+### Adding Server on pgAdmin 4
+*Note this section will specifically refer to pgAdmin 4 as a database management tool for Postgres.*<br>
+After [installing pgAdmin 4 locally](https://www.pgadmin.org/download/) and opening the application, navigate to the dashboard and select `Add New Server`. Any `Name` can be given to the server under the `General` tab. Under the `Connection` tab, enter `localhost` as the `Host name/address`, ensure the `Port` is set to the default value (`5432`), and enter the same password that was specified in the `docker-compose.yaml` file. Click `Save` and the server should be set up immediately after. Navigate to the database you created earlier and the table(s) that were created for it. By right clicking on the table name you can view all the rows of existing data (if there is any). If successful, we now have our database visible on pgAdmin 4.
+### Connecting Node App to Postgres
+To connect the Node application with the PostgreSQL, the [node-postgres NPM package needs to be installed](https://www.npmjs.com/package/pg). Using the [official documentation](https://node-postgres.com/apis/client) for this package, we can interface with out Dockerised Postgres database.
