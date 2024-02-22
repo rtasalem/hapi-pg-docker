@@ -1,6 +1,7 @@
 'use strict'
 
 const Hapi = require('@hapi/hapi')
+const { client } = require('./database')
 
 const init = async () => {
   const server = Hapi.server({
@@ -11,8 +12,22 @@ const init = async () => {
   server.route({
     method: '*',
     path: '/',
-    handler: (request, h) => {
+    handler: async (request, h) => {
       return 'Hello World!'
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/messages',
+    handler: async (request, h) => {
+      try {
+        const getAllData = `select * from messages`
+        const { rows } = await client.query(getAllData)
+        return h.response(rows).code(200)
+      } catch (error) {
+        return console.log(rror.message)
+      }
     }
   })
 

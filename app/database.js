@@ -1,4 +1,4 @@
-const { Client } = require('pg');
+const { Client } = require('pg')
 
 const client = new Client({
   host: 'localhost',
@@ -8,25 +8,29 @@ const client = new Client({
   database: 'pg_database'
 });
 
-client.connect();
+client.connect()
 
-function handleQuery(err, res) {
-  if (!err) {
-    console.log(res.rows)
-  } else {
-    console.log(err.message)
-  }
-  client.end()
-}
+module.exports = { 
+  client
+ }
 
-// const insertData = `insert into messages values (4, 'bon voyage!')`
+// function handleQuery(err, res) {
+//   if (!err) {
+//     console.log(res.rows)
+//   } else {
+//     console.log(err.message)
+//   }
+//   client.end()
+// }
+
+// const insertData = `insert into messages values (8, 'bon voyage!')`
 // client.query(insertData)
 
-// const updateData = `update messages set content = 'go away already', messages_id = 5 where messages_id = 1`
+// const updateData = `update messages set content = 'bye bye' where messages_id = 8`
 // client.query(updateData)
 
-// const deleteData = `delete from messages where messages_id = 4`
+// const deleteData = `delete from messages where messages_id = 3`
 // client.query(deleteData)
 
-const fetchAllData = `select * from messages`
-client.query(fetchAllData, handleQuery)
+// const fetchAllData = `select * from messages`
+// client.query(fetchAllData, handleQuery)
