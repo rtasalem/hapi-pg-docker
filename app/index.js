@@ -26,7 +26,7 @@ const init = async () => {
         const { rows } = await client.query(getAllData)
         return h.response(rows).code(200)
       } catch (error) {
-        return console.log(rror.message)
+        return console.log(error.message)
       }
     }
   })
