@@ -1,7 +1,15 @@
 'use strict'
 
 const Hapi = require('@hapi/hapi')
-const { client } = require('./database')
+const { Client } = require('pg')
+
+const client = new Client({
+  host: 'localhost',
+  user: 'postgres',
+  password: 'mysecretpassword',
+  port: 5432,
+  database: 'pg_database'
+});
 
 const init = async () => {
   const server = Hapi.server({
@@ -16,18 +24,17 @@ const init = async () => {
       return 'Hello World!'
     }
   })
-
+  
   server.route({
     method: 'GET',
     path: '/messages',
     handler: async (request, h) => {
       try {
-        await client.connect()
-        // const getAllData = `select * from messages`
-        // const { rows } = client.query(getAllData)
-        // return 'connected!'
+        const getAllData = `select * from messages`
+        const { rows } = await client.query(getAllData)
+        return rows
       } catch (error) {
-        return console.log(error.message)
+        return h.response('Internal server error').code(500)  
       }
     }
   })
