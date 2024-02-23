@@ -22,9 +22,10 @@ const init = async () => {
     path: '/messages',
     handler: async (request, h) => {
       try {
-        const getAllData = `select * from messages`
-        const { rows } = await client.query(getAllData)
-        return h.response(rows).code(200)
+        await client.connect()
+        // const getAllData = `select * from messages`
+        // const { rows } = client.query(getAllData)
+        // return 'connected!'
       } catch (error) {
         return console.log(error.message)
       }

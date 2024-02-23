@@ -8,11 +8,7 @@ const client = new Client({
   database: 'pg_database'
 });
 
-client.connect()
-
-module.exports = { 
-  client
- }
+// client.connect()
 
 // function handleQuery(err, res) {
 //   if (!err) {
@@ -34,3 +30,7 @@ module.exports = {
 
 // const fetchAllData = `select * from messages`
 // client.query(fetchAllData, handleQuery)
+
+module.exports = { 
+  client
+ }
