@@ -20,7 +20,7 @@ const init = async () => {
   server.route({
     method: '*',
     path: '/',
-    handler: async (request, h) => {
+    handler: (request, h) => {
       return 'Hello World!'
     }
   })
@@ -39,6 +39,7 @@ const init = async () => {
     }
   })
 
+  await client.connect()
   await server.start()
   console.log('Server running on %s', server.info.uri)
 }
