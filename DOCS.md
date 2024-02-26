@@ -61,4 +61,4 @@ Within the `app` directory, create a new file called `database.js`. Import `Clie
 - The `port` is the default Postgres port: `5432`.
 - `database` will be the database name that was used when creating the database via the terminal.
 
-Now that the client is set up, both the connection and queries can be written. 
+Now that the client is set up, both the connection and queries can be written. The query takes the format of a variable containing the SQL statement as a string. This variable is then passed to the `client.query` method. A function named `handleQuery` can be found in the `database.js` folder, note that this does need to be passed into every instance of the `client.query` method.
