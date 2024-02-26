@@ -8,29 +8,17 @@ const client = new Client({
   database: 'pg_database'
 });
 
-// client.connect()
+client.connect()
 
-// function handleQuery(err, res) {
-//   if (!err) {
-//     console.log(res.rows)
-//   } else {
-//     console.log(err.message)
-//   }
-//   client.end()
-// }
-
-// const insertData = `insert into messages values (8, 'bon voyage!')`
-// client.query(insertData)
-
-// const updateData = `update messages set content = 'bye bye' where messages_id = 8`
-// client.query(updateData)
-
-// const deleteData = `delete from messages where messages_id = 3`
-// client.query(deleteData)
-
-// const fetchAllData = `select * from messages`
-// client.query(fetchAllData, handleQuery)
-
-module.exports = { 
-  client
+function handleQuery(err, res) {
+  if (!err) {
+    console.log(res.rows)
+  } else {
+    console.log(err.message)
+  }
+  client.end()
 }
+
+// create a query as a variable then pass it to the client.query() method
+const fetchAllData = `select * from messages`
+client.query(fetchAllData, handleQuery)

@@ -1,15 +1,6 @@
 'use strict'
 
 const Hapi = require('@hapi/hapi')
-const { Client } = require('pg')
-
-const client = new Client({
-  host: 'localhost',
-  user: 'postgres',
-  password: 'mysecretpassword',
-  port: 5432,
-  database: 'pg_database'
-});
 
 const init = async () => {
   const server = Hapi.server({
@@ -39,7 +30,6 @@ const init = async () => {
     }
   })
 
-  await client.connect()
   await server.start()
   console.log('Server running on %s', server.info.uri)
 }
