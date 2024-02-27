@@ -8,7 +8,7 @@ const sequelize = new Sequelize({
   port: 5432,
   username: 'postgres',
   password: 'mysecretpassword',
-  database: 'pg_database',
+  database: 'pg_database'
 })
 
 const User = sequelize.define('User', {
@@ -16,13 +16,19 @@ const User = sequelize.define('User', {
     type: DataTypes.INTEGER,
     allowNull: false,
     primaryKey: true,
-    autoIncrement: true,
+    autoIncrement: true
   },
   username: {
     type: DataTypes.STRING,
     allowNull: false,
-  },
+  }
 })
+
+try {
+  console.log('Successfully connected to the database')
+} catch (error) {
+  console.error('Unable to connect to the database:', error)
+}
 
 (async () => {
   try {
@@ -30,7 +36,7 @@ const User = sequelize.define('User', {
     const allUsers = await User.findAll()
     console.log(JSON.stringify(allUsers))
   } catch (error) {
-    console.error('Unable to connect to the database:', error)
+    console.log(error)
   } finally {
     await sequelize.close()
   }
