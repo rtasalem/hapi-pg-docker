@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Practice repo used to learn how to Dockerise a Hapi.js server and a PostgreSQL database.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Rana Salem ranatasalem@gmail.com",
   "license": "ISC",
   "dependencies": {
