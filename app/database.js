@@ -1,5 +1,6 @@
 const { Client } = require('pg')
 
+// can't use dotenv with this setup?
 const client = new Client({
   host: 'localhost',
   user: 'postgres',

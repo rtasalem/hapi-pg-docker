@@ -15,20 +15,6 @@ const init = async () => {
       return 'Hello World!'
     }
   })
-  
-  server.route({
-    method: 'GET',
-    path: '/messages',
-    handler: async (request, h) => {
-      try {
-        const getAllData = `select * from messages`
-        const { rows } = await client.query(getAllData)
-        return rows
-      } catch (error) {
-        return h.response('Internal server error').code(500)  
-      }
-    }
-  })
 
   await server.start()
   console.log('Server running on %s', server.info.uri)
