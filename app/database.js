@@ -7,7 +7,7 @@ const client = new Client({
   password: 'mysecretpassword',
   port: 5432,
   database: 'pg_database'
-});
+})
 
 client.connect()
 

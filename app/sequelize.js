@@ -1,5 +1,4 @@
 const { Sequelize, DataTypes } = require('sequelize')
-require('dotenv').config()
 
 // can't fully use dotenv with this setup?
 const sequelize = new Sequelize({

@@ -61,7 +61,7 @@ Within the `app` directory, create a new file called `database.js`. Import `Clie
 - The `port` is the default Postgres port: `5432`.
 - `database` will be the database name that was used when creating the database via the terminal.
 
-Now that the client is set up, both the connection and queries can be written. The query takes the format of a variable containing the SQL statement as a string. This variable is then passed to the `client.query` method. A function named `handleQuery` can be found in the `database.js` folder, note that this does need to be passed into every instance of the `client.query` method.<br>
+Now that the client is set up, both the connection and queries can be written. The query takes the format of a variable containing the SQL statement as a string. This variable is then passed to the `client.query` method. A function named `handleQuery` can be found in the `database.js` folder, note that this does need to be passed into every instance of the `client.query` method.<br><br>
 To check these queries are being made successfully, log them to the console and run `node database`.
 ## Sequelize Set-Up
 [Sequelize](https://sequelize.org/) was used to connect to the existing database and create a new table (the first table I created didn't actually have a primary key, and since all SQL tables should have a primary key, I opted to create a new table with Sequelize rather than work with the existing table).
@@ -69,5 +69,22 @@ Install the [Sequelize NPM package](https://www.npmjs.com/package/sequelize):
 ```
 npm i sequelize
 ```
-To set up the connection to the database, a separate file was created: `sequelize.js`. Both `Sequelize` and `DataTypes` were imported from the NPM package. A Sequelize instance was created with the following variables: `dialect`, `host`, `port`, `username`, `password`, and `database`. Following this, a new model was defined (`Users`) and `DataTypes` is used to define the columns (e.g. `INTEGER`, `STRING` etc.). The only thing left to do is sync the new model with the database, create a variable that contains the SQL query (e.g. `findAll`), and log the output of the query to the console. It's also important to remember to close the connection (if this is needed). Note at this stage any queries made would be hardcoded. I did also set up a `.env` just to implement best practice, but I got back errors from both the node-postgres and Sequelize packages saying the password had to be a string (will need to come back and look into this more).
-## Configure Asynchronous Route to Display Table Contents
+To set up the connection to the database, a separate file was created: `sequelize.js`. Both `Sequelize` and `DataTypes` were imported from the NPM package. A Sequelize instance was created with the following variables: `dialect`, `host`, `port`, `username`, `password`, and `database`. Following this, a new model was defined (`Users`) and `DataTypes` is used to define the columns (e.g. `INTEGER`, `STRING` etc.).<br><br>
+The only thing left to do is sync the new model with the database, create a variable that contains the SQL query (e.g. `findAll`), and log the output of the query to the console. It's also important to remember to close the connection (if this is needed). Note at this stage any queries made would be hardcoded. I did also set up a `.env` just to try and use environment variables, but I got back errors from both the node-postgres and Sequelize packages saying the password had to be a string (will need to come back and look into this more).
+## Configure Asynchronous Route in Server (Sequelize & node-postgres)
+A route was configured so that the server could display data from the `Users` table through `localhost:3001/users`. The important thing to understand about this Sequelize set-up is that the port (`5432`) will never be able to connect properly to the server unless the host is given the correct value. When creating an instance of `Client` (node-postgres) or `Sequelize` the hose was mistakenly entered as `localhost`. In a Docker environment, `localhost` within a contianer refers to the container itself, not the host machine where Postgres is running. Therefore to solve the issue, the host name was changed to the service name (`hapi-pg-docker-postgres`) defined in the `docker-compose.yaml` file. This enables Docker to resolve the service name to the correct IP address of the container running Postgres (i.e. the Hapi.js server can connect to the Postgres container). Keeping this in mind, it should be straight forward to set up a route: `/users`.
+```
+  server.route({
+    method: 'GET',
+    path: '/users',
+    handler: async (request, h) => {
+      try {
+        const allUsers = await User.findAll()
+        return allUsers
+      } catch (error) {
+        console.error('Error fetching users:', error)
+        return h.response('Internal Server Error').code(500)
+      }
+    }
+  })
+```
