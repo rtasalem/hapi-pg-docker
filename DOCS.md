@@ -38,7 +38,7 @@ Below are the instructions for creating a database, connecting to the database, 
 1. Create a database:<br>
 `create database <database_name>;`
 2. Connect to the database:<br>
-`\c <database_name>;`
+`\c <database_name>`
 3. Create a table inside the database:
 ``` 
 create table <table_name> (
@@ -61,4 +61,13 @@ Within the `app` directory, create a new file called `database.js`. Import `Clie
 - The `port` is the default Postgres port: `5432`.
 - `database` will be the database name that was used when creating the database via the terminal.
 
-Now that the client is set up, both the connection and queries can be written. The query takes the format of a variable containing the SQL statement as a string. This variable is then passed to the `client.query` method. A function named `handleQuery` can be found in the `database.js` folder, note that this does need to be passed into every instance of the `client.query` method.
+Now that the client is set up, both the connection and queries can be written. The query takes the format of a variable containing the SQL statement as a string. This variable is then passed to the `client.query` method. A function named `handleQuery` can be found in the `database.js` folder, note that this does need to be passed into every instance of the `client.query` method.<br>
+To check these queries are being made successfully, log them to the console and run `node database`.
+## Sequelize Set-Up
+[Sequelize](https://sequelize.org/) was used to connect to the existing database and create a new table (the first table I created didn't actually have a primary key, and since all SQL tables should have a primary key, I opted to create a new table with Sequelize rather than work with the existing table).
+Install the [Sequelize NPM package](https://www.npmjs.com/package/sequelize):
+```
+npm i sequelize
+```
+To set up the connection to the database, a separate file was created: `sequelize.js`. Both `Sequelize` and `DataTypes` were imported from the NPM package. A Sequelize instance was created with the following variables: `dialect`, `host`, `port`, `username`, `password`, and `database`. Following this, a new model was defined (`Users`) and `DataTypes` is used to define the columns (e.g. `INTEGER`, `STRING` etc.). The only thing left to do is sync the new model with the database, create a variable that contains the SQL query (e.g. `findAll`), and log the output of the query to the console. It's also important to remember to close the connection (if this is needed). Note at this stage any queries made would be hardcoded. I did also set up a `.env` just to implement best practice, but I got back errors from both the node-postgres and Sequelize packages saying the password had to be a string (will need to come back and look into this more).
+## Configure Asynchronous Route to Display Table Contents
