@@ -89,7 +89,34 @@ A route was configured so that the server could display data from the `Users` ta
   })
 ```
 ## Refactoring & Project Structure
-Initially, all database instances and routes were written into one file, `index.js`. To tidy up the application, the entire project was broken down and refactored and now has the following structure:
+Initially, all database instances and routes were written into one file, `index.js`. To tidy up the application, the entire project was broken down and refactored with the following structure:
 ```
-insert project structure here
+hapi-pg-docker/
+|   .gitignore
+|   DOCS.md
+|   Dockerfile
+|   README.md
+|   docker-compose.yaml
+|   package-lock.json
+|   package.json
+|
+└───app/
+|   |
+│   └───node-postgres/
+|   |   |   database.js
+|   |   |
+|   └───routes/
+|   |   |   get-messages.js
+|   |   |   get-users.js
+|   |   |   home.js
+|   |   |
+│   └───sequelize/
+|   |   |   database.js
+│   │   |
+│   └───standalone-db-instances/
+│   |   │   postgres.js
+|   |   |   sequelize.js
+|   |   |
+|   └───index.js
 ```
+Note the `standalone-db-instances` are just examples to understand how the `node-postgres` and `sequelize` NPM packages work. After starting the container, the commands `node postgres` and `node sequelize` can be run to see the output of the respective tables in the database (navigate to the `standalone-db-instances` directory beforehand).
