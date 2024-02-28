@@ -1,4 +1,4 @@
-const { User} = require('../sequelize/database')
+const { sequelize, User } = require('../sequelize/database')
 
 module.exports = {
   method: 'GET',
@@ -8,7 +8,7 @@ module.exports = {
       const allUsers = await User.findAll()
       return allUsers
     } catch (error) {
-      return h.response('Internal Server Error').code(500)
+      return h.response
     }
   }
 }
