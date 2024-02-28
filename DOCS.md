@@ -88,5 +88,8 @@ A route was configured so that the server could display data from the `Users` ta
     }
   })
 ```
-## Refactoring
-wip
+## Refactoring & Project Structure
+Initially, all database instances and routes were written into one file, `index.js`. To tidy up the application, the entire project was broken down and refactored and now has the following structure:
+```
+insert project structure here
+```

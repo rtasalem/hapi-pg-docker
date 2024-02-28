@@ -6,7 +6,7 @@ const sequelize = new Sequelize({
   port: 5432,
   username: 'postgres',
   password: 'mysecretpassword',
-  database: 'pg_database',
+  database: 'pg_database'
 })
 
 const User = sequelize.define('User', {
@@ -14,11 +14,11 @@ const User = sequelize.define('User', {
     type: DataTypes.INTEGER,
     allowNull: false,
     primaryKey: true,
-    autoIncrement: true,
+    autoIncrement: true
   },
   username: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   }
 })
 

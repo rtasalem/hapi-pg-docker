@@ -9,46 +9,49 @@ const init = async () => {
     console.log('Successfully connected to the database')
     await sequelize.sync()
     await client.connect()
-    
+
     const server = Hapi.server({
       port: 3001,
       host: '0.0.0.0'
     })
 
-    server.route({
-      method: '*',
-      path: '/',
-      handler: (request, h) => {
-        return 'Hello World!'
-      },
-    })
+    server.route(require('./routes/home'))
+    server.route(require('./routes/get-users'))
+    server.route(require('./routes/get-messages'))
 
-    server.route({
-      method: 'GET',
-      path: '/users',
-      handler: async (request, h) => {
-        try {
-          const allUsers = await User.findAll()
-          return allUsers
-        } catch (error) {
-          console.error('Error fetching users:', error)
-          return h.response('Internal Server Error').code(500)
-        }
-      },
-    })
+    // server.route({
+    //   method: '*',
+    //   path: '/',
+    //   handler: (request, h) => {
+    //     return 'Hello World!'
+    //   }
+    // })
 
-    server.route({
-      method: 'GET',
-      path: '/messages',
-      handler: async (request, h) => {
-        try {
-          const fetchAllData = `select * from messages`
-          return client.query(fetchAllData)
-        } catch (error) {
-          console.error('Error fetching messages:', error)
-        }
-      },
-    })
+    // server.route({
+    //   method: 'GET',
+    //   path: '/users',
+    //   handler: async (request, h) => {
+    //     try {
+    //       const allUsers = await User.findAll()
+    //       return allUsers
+    //     } catch (error) {
+    //       return h.response('Internal Server Error').code(500)
+    //     }
+    //   }
+    // })
+
+    // server.route({
+    //   method: 'GET',
+    //   path: '/messages',
+    //   handler: async (request, h) => {
+    //     try {
+    //       const fetchAllData = `select * from messages`
+    //       return client.query(fetchAllData)
+    //     } catch (error) {
+    //       return h.response('Internal Server Error').code(500)
+    //     }
+    //   }
+    // })
 
     await server.start()
     console.log('Server running on %s', server.info.uri)
