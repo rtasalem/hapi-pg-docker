@@ -19,40 +19,6 @@ const init = async () => {
     server.route(require('./routes/get-users'))
     server.route(require('./routes/get-messages'))
 
-    // server.route({
-    //   method: '*',
-    //   path: '/',
-    //   handler: (request, h) => {
-    //     return 'Hello World!'
-    //   }
-    // })
-
-    // server.route({
-    //   method: 'GET',
-    //   path: '/users',
-    //   handler: async (request, h) => {
-    //     try {
-    //       const allUsers = await User.findAll()
-    //       return allUsers
-    //     } catch (error) {
-    //       return h.response('Internal Server Error').code(500)
-    //     }
-    //   }
-    // })
-
-    // server.route({
-    //   method: 'GET',
-    //   path: '/messages',
-    //   handler: async (request, h) => {
-    //     try {
-    //       const fetchAllData = `select * from messages`
-    //       return client.query(fetchAllData)
-    //     } catch (error) {
-    //       return h.response('Internal Server Error').code(500)
-    //     }
-    //   }
-    // })
-
     await server.start()
     console.log('Server running on %s', server.info.uri)
   } catch (error) {
