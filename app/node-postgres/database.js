@@ -1,11 +1,12 @@
+const { schema } = require('../schema')
 const { Client } = require('pg')
 
 const client = new Client({
-  host: 'hapi-pg-docker-postgres',
-  user: 'postgres',
-  password: 'mysecretpassword',
-  port: 5432,
-  database: 'pg_database',
+  host: process.env.POSTGRES_HOST,
+  user: process.env.POSTGRES_USERNAME,
+  password: process.env.POSTGRES_PASSWORD,
+  port: process.env.POSTGRES_PORT,
+  database: process.env.POSTGRES_DB
 })
 
 module.exports = { client }
