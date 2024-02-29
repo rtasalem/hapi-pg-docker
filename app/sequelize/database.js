@@ -1,12 +1,13 @@
+const { schema } = require('../schema')
 const { Sequelize, DataTypes } = require('sequelize')
 
 const sequelize = new Sequelize({
   dialect: 'postgres',
-  host: 'hapi-pg-docker-postgres',
-  port: 5432,
-  username: 'postgres',
-  password: 'mysecretpassword',
-  database: 'pg_database'
+  host: process.env.POSTGRES_HOST,
+  port: process.env.POSTGRES_PORT,
+  username: process.env.POSTGRES_USERNAME,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DB
 })
 
 const User = sequelize.define('User', {
