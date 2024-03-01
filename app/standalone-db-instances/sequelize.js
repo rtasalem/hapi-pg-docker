@@ -1,6 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize')
 
-// can't fully use dotenv with this setup?
 const sequelize = new Sequelize({
   dialect: 'postgres',
   host: 'localhost',
