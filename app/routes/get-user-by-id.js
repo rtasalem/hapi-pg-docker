@@ -9,13 +9,12 @@ module.exports = {
 
       if (!user) {
         return h
-          .response(`User with ID ${request.params.id} not found`)
+          .response(`User with ID ${request.params.id} not found in database.`)
           .code(404)
       }
 
       return user
     } catch (error) {
-      console.error('Error fetching user: ', error)
       return h.response('Internal Server Error').code(500)
     }
   }
