@@ -99,9 +99,9 @@ To set up the connection to the database, a separate file was created: `sequeliz
 The only thing left to do is sync the new model with the database, create a variable that contains the SQL query (e.g. `findAll`), and log the output of the query to the console. It's also important to remember to close the connection (if this is needed). Note at this stage any queries made would be hardcoded.<br><br>
 ~~I did also set up a `.env` just to try and use environment variables, but I got back errors from both the node-postgres and Sequelize packages saying the password had to be a string (will need to come back and look into this more).~~ Setting up the environment variables via Docker Compose & a `.env` file was achieved, see the [Environment Variables](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#environment-variables) section for full details.
 
-## Configure Asynchronous Route in Server (Sequelize & node-postgres)
+## Configure Asynchronous Routes in Server (Sequelize & node-postgres)
 
-A route was configured so that the server could display data from the `Users` table through `localhost:3001/users`. The important thing to understand about this Sequelize set-up is that the port (`5432`) will never be able to connect properly to the server unless the host is given the correct value. When creating an instance of `Client` (node-postgres) or `Sequelize` the hose was mistakenly entered as `localhost`. In a Docker environment, `localhost` within a contianer refers to the container itself, not the host machine where Postgres is running. Therefore to solve the issue, the host name was changed to the service name (`hapi-pg-docker-postgres`) defined in the `docker-compose.yaml` file. This enables Docker to resolve the service name to the correct IP address of the container running Postgres (i.e. the Hapi.js server can connect to the Postgres container). Keeping this in mind, it should be straight forward to set up a route: `/users`.
+A route was configured so that the server could display data from the `Users` table through `localhost:3001/users`. The important thing to understand about this Sequelize set-up is that the port (`5432`) will never be able to connect properly to the server unless the host is given the correct value. When creating an instance of `Client` (node-postgres) or `Sequelize` the hose was mistakenly entered as `localhost`. In a Docker environment, `localhost` within a contianer refers to the container itself, not the host machine where Postgres is running. Therefore to solve the issue, the host name was changed to the service name (`hapi-pg-docker-postgres`) defined in the `docker-compose.yaml` file under `POSTGRES_HOST`. This enables Docker to resolve the service name to the correct IP address of the container running Postgres (i.e. the Hapi.js server can connect to the Postgres container). Keeping this in mind, it should be straight forward to set up a route: `/users`.
 
 ```
   server.route({
@@ -118,6 +118,7 @@ A route was configured so that the server could display data from the `Users` ta
     }
   })
 ```
+Additional routes were set up including `/messages`, `/messages/{id}`, `/users`, `/users/{id}`.
 
 ## Refactoring & Project Structure
 
