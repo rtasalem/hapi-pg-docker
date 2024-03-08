@@ -2,10 +2,10 @@ const { Client } = require('pg')
 
 const client = new Client({
   host: 'localhost',
-  user: 'postgres',
-  password: 'mysecretpassword',
+  user: 'get-username-from-env',
+  password: 'get-password-from-env',
   port: 5432,
-  database: 'pg_database'
+  database: 'get-database-name-from-env'
 })
 
 client.connect()
@@ -19,5 +19,6 @@ function handleQuery(err, res) {
   client.end()
 }
 
-const fetchAllData = `select * from messages`
+const fetchAllData = `select * from messages order by messages_id asc`
+
 client.query(fetchAllData, handleQuery)
