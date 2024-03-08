@@ -1,11 +1,11 @@
-const { sequelize, User } = require('../sequelize/database')
+const { User } = require('../sequelize/database')
 
 module.exports = {
   method: 'GET',
   path: '/users/{id}',
   handler: async (request, h) => {
     try {
-      const user = await User.findByPk(userIdrequest.params.id)
+      const user = await User.findByPk(request.params.id)
 
       if (!user) {
         return h
@@ -15,6 +15,7 @@ module.exports = {
 
       return user
     } catch (error) {
+      console.log(error)
       return h.response('Internal Server Error').code(500)
     }
   }
