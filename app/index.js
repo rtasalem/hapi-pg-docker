@@ -2,7 +2,7 @@
 const Hapi = require('@hapi/hapi')
 const { sequelize, User } = require('./sequelize/database')
 const { client } = require('./node-postgres/database')
-const { startMessaging } = require('./service-bus/send-message')
+const { startMessaging } = require('./service-bus/send-message-to-queue')
 
 const init = async () => {
   try {
