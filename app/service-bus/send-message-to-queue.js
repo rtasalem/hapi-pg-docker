@@ -11,32 +11,38 @@ const saveToDB = async (message) => {
   })
 
   await client.connect()
-  const insertQuery = `insert into messages (messages_id, content) values ($1, $2)`
-  await client.query(insertQuery, [message.body.messages_id, message.body.content])
+  const insertQuery = `insert into more_messages (body) values ($1)`
+  await client.query(insertQuery, [message.body.body])
   await client.end()
-  console.log('A new message has been saved to the database: ', message.body)
+  console.log(
+    'A new message has been saved to the database: ',
+    message.body.body
+  )
 }
 
 const handleMessage = async (message) => {
-  console.log('The following message has been recieved: ', message.body)
+  console.log('The following message has been recieved: ', message.body.body)
   await saveToDB(message)
 }
 
-const startMessaging = async () => {
-  const sbClient = new ServiceBusClient(process.env.SERVICE_BUS_CONNECTION_STRING)
-  const receiver = sbClient.createReceiver(process.env.SERVICE_BUS_QUEUE_NAME)
+const sendMessageToQueue = async () => {
+  const sbClient = new ServiceBusClient(
+    process.env.SERVICE_BUS_CONNECTION_STRING
+  )
+  const sender = sbClient.createSender(process.env.SERVICE_BUS_QUEUE_NAME)
 
-  receiver.subscribe({
-    processMessage: async (brokeredMessage) => {
+  const sendMessage = async (messageBody) => {
+    try {
       const message = {
-        body: brokeredMessage.body
+        body: JSON.stringify(messageBody)
       }
-      handleMessage(message)
-    },
-    processError: async (args) => {
-      console.log('ERROR: ', args.error)
+      await handleMessage(message)
+      await sender.sendMessages(message)
+      console.log('Message sucessfully sent to service bus queue.')
+    } catch (error) {
+      console.log('Error sending message: ', error)
     }
-  })
+  }
 }
 
-module.exports = { startMessaging }
+module.exports = { sendMessageToQueue }
