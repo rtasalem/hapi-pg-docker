@@ -2,7 +2,6 @@
 const Hapi = require('@hapi/hapi')
 const { sequelize, User } = require('./sequelize/database')
 const { client } = require('./node-postgres/database')
-const { sendMessageToQueue } = require('./service-bus/send-message-to-queue')
 
 const init = async () => {
   try {
@@ -23,7 +22,6 @@ const init = async () => {
     server.route(require('./routes/get-user-by-id'))
 
     await server.start()
-    await sendMessageToQueue()
     console.log('Server running on %s', server.info.uri)
   } catch (error) {
     console.error('Unable to start server:', error)
