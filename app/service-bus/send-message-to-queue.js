@@ -10,33 +10,48 @@ const saveMessageToDB = async (message) => {
     port: 5432
   })
 
-  await client.connect()
-  const insertQuery = `insert into inbox (content) values ('${message.body.content}')`
-  await client.query(insertQuery)
-  await client.end()
-  console.log('New message saved to the database: ', message.body)
+  try {
+    await client.connect()
+    const insertQuery = `insert into inbox (content) values ('${message.body.content}')`
+    await client.query(insertQuery)
+    console.log('New message saved to the database: ', message.body)
+  } catch (error) {
+    console.error('ERROR SAVING MESSAGE TO DATABASE: ', error)
+  } finally {
+    await client.end()
+  }
 }
 
 const handleMessage = async (message) => {
-  console.log('The following message has been received: ', message.body)
-  await saveMessageToDB(message)
+  try {
+    await saveMessageToDB(message)
+    console.log('Message received: ', message.body)
+  } catch (error) {
+    console.error('ERROR: ', error)
+  }
 }
 
 const startMessaging = async () => {
-  const sbClient = new ServiceBusClient(process.env.SERVICE_BUS_CONNECTION_STRING)
-  const receiver = sbClient.createReceiver(process.env.SERVICE_BUS_QUEUE)
+  try {
+    const sbClient = new ServiceBusClient(
+      process.env.SERVICE_BUS_CONNECTION_STRING
+    )
+    const receiver = sbClient.createReceiver(process.env.SERVICE_BUS_QUEUE)
 
-  receiver.subscribe({
-    processMessage: async (brokeredMessage) => {
-      const message = {
-        body: brokeredMessage.body,
+    receiver.subscribe({
+      processMessage: async (brokeredMessage) => {
+        const message = {
+          body: brokeredMessage.body
+        }
+        handleMessage(message)
+      },
+      processError: async (args) => {
+        console.error('Error occurred: ', args.error)
       }
-      handleMessage(message)
-    },
-    processError: async (args) => {
-      console.error('Error occurred: ', args.error)
-    } 
-  })
+    })
+  } catch (error) {
+    console.error('ERROR: ', error)
+  }
 }
 
 module.exports = {
