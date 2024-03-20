@@ -8,7 +8,7 @@ module.exports = {
       const allUsers = await User.findAll()
       return allUsers
     } catch (error) {
-      return h.response
+      return h.response('Internal Server Error').code(500)
     }
   }
 }

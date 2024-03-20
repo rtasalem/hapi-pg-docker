@@ -4,9 +4,9 @@ const sequelize = new Sequelize({
   dialect: 'postgres',
   host: 'localhost',
   port: 5432,
-  username: 'postgres',
-  password: 'mysecretpassword',
-  database: 'pg_database'
+  username: 'get-username-from-env',
+  password: 'get-pass-from-env',
+  database: 'get-db-from-env'
 })
 
 const User = sequelize.define('User', {

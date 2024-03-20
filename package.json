@@ -6,8 +6,9 @@
   "author": "Rana Salem ranatasalem@gmail.com",
   "license": "ISC",
   "dependencies": {
+    "@azure/service-bus": "^7.9.4",
     "@hapi/hapi": "^21.3.3",
-    "joi": "^17.12.2",
+    "ffc-messaging": "^2.9.0",
     "pg": "^8.11.3",
     "sequelize": "^6.37.1"
   }
