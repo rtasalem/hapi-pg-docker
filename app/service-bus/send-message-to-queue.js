@@ -31,7 +31,7 @@ const handleMessage = async (message) => {
   }
 }
 
-const startMessaging = async () => {
+const startMessagingQueue = async () => {
   try {
     const sbClient = new ServiceBusClient(
       process.env.SERVICE_BUS_CONNECTION_STRING
@@ -55,5 +55,5 @@ const startMessaging = async () => {
 }
 
 module.exports = {
-  startMessaging
+  startMessagingQueue
 }

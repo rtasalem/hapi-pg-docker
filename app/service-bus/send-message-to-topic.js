@@ -31,7 +31,7 @@ const handleMessage = async (message) => {
   }
 }
 
-const startMessaging = async () => {
+const startMessagingTopic = async () => {
   try {
     const sbClient = new ServiceBusClient(process.env.SERVICE_BUS_CONNECTION_STRING)
     const topic = sbClient.createSender(process.env.SERVICE_BUS_TOPIC)
@@ -55,5 +55,5 @@ const startMessaging = async () => {
 }
 
 module.exports = {
-  startMessaging
+  startMessagingTopic
 }
