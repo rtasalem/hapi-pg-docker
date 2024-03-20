@@ -33,10 +33,10 @@ const handleMessage = async (message) => {
 
 const startMessaging = async () => {
   try {
-    const sbClient = new ServiceBusClient(
-      process.env.SERVICE_BUS_CONNECTION_STRING
-    )
-    const receiver = sbClient.createReceiver(process.env.SERVICE_BUS_QUEUE)
+    const sbClient = new ServiceBusClient(process.env.SERVICE_BUS_CONNECTION_STRING)
+    const topic = sbClient.createSender(process.env.SERVICE_BUS_TOPIC)
+    const subscription = topic.createReceiver(process.env.SERVICE_BUS_SUBSCRIPTION)
+    const receiver = subscription.createReceiver()
 
     receiver.subscribe({
       processMessage: async (brokeredMessage) => {

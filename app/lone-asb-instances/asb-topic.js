@@ -3,13 +3,13 @@ const messages = require('./example-messages')
 
 const connectionString =
   'insert-connection-string-here'
-const queue = 'insert-queue-name-here'
+const topic = 'insert-topic-name-here'
 const sbClient = new ServiceBusClient(connectionString)
-const sender = sbClient.createSender(queue)
+const sender = sbClient.createSender(topic)
 
 const sendMessage = async (message) => {
   await sender.sendMessages(messages)
-  console.log(`Message(s) succesfully sent to Service Bus queue: ${queue}`)
+  console.log(`Message(s) successfully sent to Service Bus topic: ${topic}`)
 }
 
 sendMessage()

@@ -1,9 +1,9 @@
 const messages = [
-  { body: 'With great power comes great responsibility' },
-  { body: 'Get in loser, we\'re going shopping' },
-  { body: 'Life is like a box of chocolates' },
-  { body: 'I\'ll be back (in 8 business days)' },
-  { body: 'When life gives you lemons...' }
+  { body: 'Lucky 13' },
+  { body: 'Is this a message?' },
+  { body: 'Java sucks' },
+  { body: 'Macs > Windows' },
+  { body: 'Boo!' }
 ]
 
 module.exports = messages
