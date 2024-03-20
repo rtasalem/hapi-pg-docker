@@ -1,8 +1,7 @@
 const { ServiceBusClient } = require('@azure/service-bus')
 const messages = require('./example-messages')
 
-const connectionString =
-  'insert-connection-string-here'
+const connectionString = 'insert-connection-string-here'
 const queue = 'insert-queue-name-here'
 const sbClient = new ServiceBusClient(connectionString)
 const sender = sbClient.createSender(queue)
