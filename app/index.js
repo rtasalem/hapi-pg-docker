@@ -24,7 +24,7 @@ const init = async () => {
     server.route(require('./routes/get-user-by-id'))
 
     await server.start()
-    await startMessaging()
+    await startMessagingQueue()
     await startMessagingTopic()
     console.log('Server running on %s', server.info.uri)
   } catch (error) {
