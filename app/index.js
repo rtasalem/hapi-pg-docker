@@ -21,6 +21,7 @@ const init = async () => {
     server.route(require('./routes/get-users'))
     server.route(require('./routes/get-user-by-id'))
     server.route(require('./routes/get-messages-from-inbox'))
+    server.route(require('./routes/get-message-by-id-from-inbox'))
 
     await server.start()
     console.log('Server running on %s', server.info.uri)
