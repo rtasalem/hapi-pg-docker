@@ -1,4 +1,4 @@
-# Docs
+# Documentation
 
 ## Project Initialisation
 
