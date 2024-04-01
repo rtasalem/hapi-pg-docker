@@ -170,9 +170,23 @@ Service Bus instances were successfully set up (see the [`lone-asb-instance`](ht
 I wanted to create a Service Bus instance that would send messages to the queue and/or topic _and_ save them to the postgres database. I initially struggled with this and was only able to achieve one over the other (i.e. could send to queue/topic but not persist to database OR could persist to database but could not save to queue/topic). At first thought this was due to the (lack of) constraints on the columns of the `messages` table. As the "primary key" (`messages_id`) was not auto-incrementing and was declared as an int, it had to be hardcoded when sending a message to the Service Bus queue. This would save the message to the database as I was providing both the `messages_id` and the `content` (which both have a `NOT NULL` constraint and therefore must be provided when attempting to save new rows to the `messages` table), but would not be visible via the queue on the portal. When sending messages with no `messages_id` value, the message would successfully be sent to the queue, but would no longer save into the database. The proposed solution was to create a new table (`inbox`) with the appropriate constraints. The issue stil remains in that when sending a message using the primary connection string and queue, the message saves to the database but does not save to the queue (this was also the case when using topics). It seems that some messages will simply attempt to redeliver for the max delivery count (previously 10 now 300 but increasing didn't solve the problem) before saving to the dead letter queue. This will need to be revisited at a later point. Note the the following imports/calls have been removed from the `index.js` and should be added back in if looking further into the [`service-bus`](https://github.com/rtasalem/hapi-pg-docker/tree/main/app/service-bus) directory to save to queue or topic and database:
 
 ```
-const { startMessagingQueue } = require('./service-bus/send-message-to-queue')
+const { receiveFromQueue } = require('./service-bus/send-message-to-queue')
 const { startMessagingTopic } = require('./service-bus/send-message-to-topic')
 
-await startMessagingQueue()
+await receiveFromQueue()
 await startMessagingTopic()
 ```
+
+**Update:** At a point where I feel the issue has been fixed. Sending messages via the test client will of course save the messages to the Service Bus queue (this is _before_ running the Docker container). Once the application is started via Docker, the console should log that the messages were received by the queue, but also that they have now been saved to the database and when running a select statement via pgAdmin, I found this was the case. Not perfect, as I was aiming to send and save to the database simultaneously i.e. while the Docker container was running, you send a message, check that it's in the queue, then check Postgres to see that it has also been saved to the database. With the current set up, messages are sent to the queue first and the once the Docker container is started, those same messages are consumed and removed dfrom the queue but are saved to the database. Maybe it would be worth coming back to try and achieve the initial aim, but for now this will do.<br><br>
+Note that when connecting to the Postgres client, the query has to be set up in the following way:
+```
+    const insertQuery = `insert into inbox (content) values ($1)`
+    const values = [message.body.content]
+    await client.query(insertQuery, values)
+```
+I attempted to use this set-up, but ran into issues with saving the message to the database because the value I was placing into the `content` column was not "properly quoted or sanitised":
+```
+    const insertQuery = `insert into inbox (content) values (${message.body.content})`
+    await client.query(insertQuery)
+```
+Something to just take note of for future reference.
