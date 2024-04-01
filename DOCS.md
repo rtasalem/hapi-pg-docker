@@ -177,16 +177,16 @@ await receiveFromQueue()
 await startMessagingTopic()
 ```
 
-**Update:** At a point where I feel the issue has been fixed. Sending messages via the test client will of course save the messages to the Service Bus queue (this is _before_ running the Docker container). Once the application is started via Docker, the console should log that the messages were received by the queue, but also that they have now been saved to the database and when running a select statement via pgAdmin, I found this was the case. Not perfect, as I was aiming to send and save to the database simultaneously i.e. while the Docker container was running, you send a message, check that it's in the queue, then check Postgres to see that it has also been saved to the database. With the current set up, messages are sent to the queue first and the once the Docker container is started, those same messages are consumed and removed dfrom the queue but are saved to the database. Maybe it would be worth coming back to try and achieve the initial aim, but for now this will do.<br><br>
+**Update:** At a point where I feel the issue has been fixed. Sending messages via the test client will of course save the messages to the Service Bus queue (this is _before_ running the Docker container). Once the application is started via Docker, the console should log that the messages were received by the queue, but also that they have now been saved to the database and when running a select statement via pgAdmin, I found this was the case. Not perfect, as I was aiming to send and save to the database simultaneously i.e. while the Docker container was running, you send a message, check that it's in the queue, then check Postgres to see that it has also been saved to the database. With the current set up, messages are sent to the queue first and the once the Docker container is started, those same messages are consumed and removed from the queue but are saved to the database. Maybe it would be worth coming back to try and achieve the initial aim, but for now this will do.<br><br>
 Note that when connecting to the Postgres client, the query has to be set up in the following way:
 ```
     const insertQuery = `insert into inbox (content) values ($1)`
     const values = [message.body.content]
     await client.query(insertQuery, values)
 ```
-I attempted to use this set-up, but ran into issues with saving the message to the database because the value I was placing into the `content` column was not "properly quoted or sanitised":
+I attempted to use the below set-up, but ran into issues with saving the message to the database because the value I was placing into the `content` column was not "properly quoted or sanitised":
 ```
     const insertQuery = `insert into inbox (content) values (${message.body.content})`
     await client.query(insertQuery)
 ```
-Something to just take note of for future reference. The same set-up will be applied to the `send-message-to-topic.js` file at a later point (ran into some issues where the topic/subscription/connection string was not being recognised by Service Bus, may need to create a new table to save topic messages into?).
+Something to just take note of for future reference. The same set-up will be applied to the `send-message-to-topic.js` file at a later point (ran into some issues where the topic/subscription/connection string was not being recognised by Service Bus, may need to create a new table to save topic messages into? Can the same table not be used to save messages from a queue and and topic?).
