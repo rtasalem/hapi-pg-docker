@@ -1,5 +1,22 @@
 # Documentation
 
+## Contents
+
+1. [Project Initialisation](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#project-initialisation)
+2. [Set Up Hapi.js Server](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#set-up-hapijs-server)
+3. [Dockerise Node Application](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#dockerise-node-application)
+4. [Docker Compose Configuration](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#docker-compose-configuration)
+5. [Starting Up the Container](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#starting-up-the-container)
+6. [Establish PostgreSQL Database Connection](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#establish-postgresql-database-connection)<br>
+    6.1. [Accessing PostgreSQL via Terminal](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#accessing-postgresql-via-terminal)<br>
+    6.2. [Adding Server on pgAdmin 4](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#adding-server-on-pgadmin-4)<br>
+    6.3. [Connecting Node App to Postgres](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#connecting-node-app-to-postgres)<br>
+7. [Sequelize Set-Up](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#sequelize-set-up)
+8. [Configure Asynchronous Routes in Server (Sequelize & node-postgres)](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#configure-asynchronous-routes-in-server-sequelize--node-postgres)
+9. [Refactoring & Project Structure](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#refactoring--project-structure)
+10. [Environment Variables](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#environment-variables)
+11. [Azure Service Bus](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#azure-service-bus)
+
 ## Project Initialisation
 
 Create and open a new project/repo. In the terminal (ensure you are in the project directory), run `npm init`. Select the default options. If working from a GitHub repo, ensure to include a `.gitignore` (whether as a template from GitHub (specifically the Node template) or creating a custom one from [gitignore.io](https://www.toptal.com/developers/gitignore)). Once the project has been initialised, create a directory called `app` and create a file called `index.js` (This is the entry point for which your Node application will run your project, you will have seen this as one of the default options during initialisation).
@@ -141,16 +158,29 @@ hapi-pg-docker/
 |   |   |   database.js
 |   |   |
 |   └───routes/
+|   |   |   get-message-by-id-from-inbox.js
+|   |   |   get-message-by-id.js
+|   |   |   get-messages-from-inbox.js
 |   |   |   get-messages.js
+|   |   |   get-user-by-id.js
 |   |   |   get-users.js
 |   |   |   home.js
 |   |   |
 │   └───sequelize/
 |   |   |   database.js
 │   │   |
-│   └───standalone-db-instances/
+│   └───lone-db-instances/
 │   |   │   postgres.js
 |   |   |   sequelize.js
+│   │   |
+│   └───lone-asb-instances/
+│   |   │   asb-queue.js
+|   |   |   asb-topic.js
+|   |   |   example-messages.js
+|   |   |
+│   └───service-bus/
+|   |   |   send-message-to-queue.js
+|   |   |   send-message-to-topic.js
 |   |   |
 |   └───index.js
 ```
@@ -170,9 +200,27 @@ Service Bus instances were successfully set up (see the [`lone-asb-instance`](ht
 I wanted to create a Service Bus instance that would send messages to the queue and/or topic _and_ save them to the postgres database. I initially struggled with this and was only able to achieve one over the other (i.e. could send to queue/topic but not persist to database OR could persist to database but could not save to queue/topic). At first thought this was due to the (lack of) constraints on the columns of the `messages` table. As the "primary key" (`messages_id`) was not auto-incrementing and was declared as an int, it had to be hardcoded when sending a message to the Service Bus queue. This would save the message to the database as I was providing both the `messages_id` and the `content` (which both have a `NOT NULL` constraint and therefore must be provided when attempting to save new rows to the `messages` table), but would not be visible via the queue on the portal. When sending messages with no `messages_id` value, the message would successfully be sent to the queue, but would no longer save into the database. The proposed solution was to create a new table (`inbox`) with the appropriate constraints. The issue stil remains in that when sending a message using the primary connection string and queue, the message saves to the database but does not save to the queue (this was also the case when using topics). It seems that some messages will simply attempt to redeliver for the max delivery count (previously 10 now 300 but increasing didn't solve the problem) before saving to the dead letter queue. This will need to be revisited at a later point. Note the the following imports/calls have been removed from the `index.js` and should be added back in if looking further into the [`service-bus`](https://github.com/rtasalem/hapi-pg-docker/tree/main/app/service-bus) directory to save to queue or topic and database:
 
 ```
-const { startMessagingQueue } = require('./service-bus/send-message-to-queue')
-const { startMessagingTopic } = require('./service-bus/send-message-to-topic')
+const { receiveFromQueue } = require('./service-bus/send-message-to-queue')
+const { receiveFromTopic } = require('./service-bus/send-message-to-topic')
 
-await startMessagingQueue()
-await startMessagingTopic()
+await receiveFromQueue()
+await receiveFromTopic()
 ```
+
+**Update:** At a point where I feel the issue has been fixed. Sending messages via the test client will of course save the messages to the Service Bus queue (this is _before_ running the Docker container). Once the application is started via Docker, the console should log that the messages were received by the queue, but also that they have now been saved to the database and when running a select statement via pgAdmin, I found this was the case. Not perfect, as I was aiming to send and save to the database simultaneously i.e. while the Docker container was running, you send a message, check that it's in the queue, then check Postgres to see that it has also been saved to the database. With the current set up, messages are sent to the queue first and the once the Docker container is started, those same messages are consumed and removed from the queue but are saved to the database. Maybe it would be worth coming back to try and achieve the initial aim, but for now this will do.<br><br>
+Note that when connecting to the Postgres client, the query has to be set up in the following way:
+
+```
+    const insertQuery = `insert into inbox (content) values ($1)`
+    const values = [message.body.content]
+    await client.query(insertQuery, values)
+```
+
+I attempted to use the below set-up, but ran into issues with saving the message to the database because the value I was placing into the `content` column was not "properly quoted or sanitised":
+
+```
+    const insertQuery = `insert into inbox (content) values (${message.body.content})`
+    await client.query(insertQuery)
+```
+
+Something to just take note of for future reference. The same set-up will be applied to the `send-message-to-topic.js` file at a later point (ran into some issues where the topic/subscription/connection string was not being recognised by Service Bus, may need to create a new table to save topic messages into? Can the same table not be used to save messages from a queue and and topic?).

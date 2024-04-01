@@ -1,4 +1,4 @@
-const { ServiceBusClient } = require('@azure/service-bus')
+const { delay, ServiceBusClient } = require('@azure/service-bus')
 const { Client } = require('pg')
 
 const saveMessageToDB = async (message) => {
@@ -13,47 +13,48 @@ const saveMessageToDB = async (message) => {
   try {
     await client.connect()
     const insertQuery = `insert into inbox (content) values ($1)`
-    await client.query(insertQuery, [message.body.content])
-    console.log('New message saved to the database: ', message.body)
+    const values = [message.body.content]
+    await client.query(insertQuery, values)
+    console.log(`New message saved to the database: ${message.body.content}`)
   } catch (error) {
-    console.error('ERROR SAVING MESSAGE TO DATABASE: ', error)
+    console.error(`ERROR SAVING MESSAGE TO DATABASE: ${error}`)
   } finally {
     await client.end()
   }
 }
 
-const handleMessage = async (message) => {
-  try {
-    await saveMessageToDB(message)
-    console.log('Message received: ', message.body)
-  } catch (error) {
-    console.error('ERROR HANDLING MESSAGE: ', error)
-  }
-}
+const connectionString = process.env.SERVICE_BUS_CONNECTION_STRING
+const sbClient = new ServiceBusClient(connectionString)
+const topic = process.env.SERVICE_BUS_TOPIC
+const subscription = process.env.SERVICE_BUS_SUBSCRIPTION
+const receiver = sbClient.createReceiver(topic, subscription)
 
-const startMessagingTopic = async () => {
+const receiveFromTopic = async () => {
   try {
-    const sbClient = new ServiceBusClient(process.env.SERVICE_BUS_CONNECTION_STRING)
-    const topic = sbClient.createSender(process.env.SERVICE_BUS_TOPIC)
-    const subscription = topic.createReceiver(process.env.SERVICE_BUS_SUBSCRIPTION)
-    const receiver = subscription.createReceiver()
+    
+    const handleMessage = async (message) => {
+      await saveMessageToDB(message)
+      console.log(`Message reveived from topic: ${message.body.content}`)
+    }
+
+    const handleError = async (error) => {
+      console.error(error)
+    }
 
     receiver.subscribe({
-      processMessage: async (brokeredMessage) => {
-        const message = {
-          body: brokeredMessage.body
-        }
-        handleMessage(message)
-      },
-      processError: async (args) => {
-        console.error('Error occurred: ', args.error)
-      }
+      processMessage: handleMessage,
+      processError: handleError
     })
+
+    await delay(10000)
   } catch (error) {
-    console.error('ERROR ON STARTING MESSAGING: ', error)
+    console.error(`ERROR RECEIVING MESSAGE FROM TOPIC: ${error}`)
+  } finally {
+    await receiver.close()
+    await sbClient.close()
   }
 }
 
 module.exports = {
-  startMessagingTopic
+  receiveFromTopic
 }
