@@ -201,10 +201,10 @@ I wanted to create a Service Bus instance that would send messages to the queue 
 
 ```
 const { receiveFromQueue } = require('./service-bus/send-message-to-queue')
-const { startMessagingTopic } = require('./service-bus/send-message-to-topic')
+const { receiveFromTopic } = require('./service-bus/send-message-to-topic')
 
 await receiveFromQueue()
-await startMessagingTopic()
+await receiveFromTopic()
 ```
 
 **Update:** At a point where I feel the issue has been fixed. Sending messages via the test client will of course save the messages to the Service Bus queue (this is _before_ running the Docker container). Once the application is started via Docker, the console should log that the messages were received by the queue, but also that they have now been saved to the database and when running a select statement via pgAdmin, I found this was the case. Not perfect, as I was aiming to send and save to the database simultaneously i.e. while the Docker container was running, you send a message, check that it's in the queue, then check Postgres to see that it has also been saved to the database. With the current set up, messages are sent to the queue first and the once the Docker container is started, those same messages are consumed and removed from the queue but are saved to the database. Maybe it would be worth coming back to try and achieve the initial aim, but for now this will do.<br><br>

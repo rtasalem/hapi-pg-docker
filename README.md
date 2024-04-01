@@ -6,6 +6,7 @@ This repo was created as practice for learning to Dockerise both a Hapi.js serve
 - [Node.js](https://nodejs.org/en)
 - [Hapi.js](https://hapi.dev/)
 - [PostgreSQL](https://www.postgresql.org/) ([pgAdmin 4](https://www.pgadmin.org/) for database management)
+- [Azure Service Bus](https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-overview)
 ## Documentation
 [In-depth documentation](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md) has been completed in the form of a comprehensive write-up.
 ## Learning Milestones
