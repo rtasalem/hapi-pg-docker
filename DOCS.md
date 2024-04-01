@@ -189,4 +189,4 @@ I attempted to use this set-up, but ran into issues with saving the message to t
     const insertQuery = `insert into inbox (content) values (${message.body.content})`
     await client.query(insertQuery)
 ```
-Something to just take note of for future reference.
+Something to just take note of for future reference. The same set-up will be applied to the `send-message-to-topic.js` file at a later point (ran into some issues where the topic/subscription/connection string was not being recognised by Service Bus, may need to create a new table to save topic messages into?).

@@ -32,7 +32,7 @@ const receiveFromQueue = async () => {
   try {
     const handleMessage = async (message) => {
       await saveMessageToDB(message)
-      console.log(`Message received: ${message.body.content}`)
+      console.log(`Message received from queue: ${message.body.content}`)
     }
 
     const handleError = async (error) => {
@@ -46,7 +46,7 @@ const receiveFromQueue = async () => {
 
     await delay(10000)
   } catch (error) {
-    console.error('ERROR RECEIVING MESSAGE FROM QUEUE: ', error)
+    console.error(`ERROR RECEIVING MESSAGE FROM QUEUE: ${error}`)
   } finally {
     await receiver.close()
     await sbClient.close()
