@@ -8,9 +8,9 @@
 4. [Docker Compose Configuration](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#docker-compose-configuration)
 5. [Starting Up the Container](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#starting-up-the-container)
 6. [Establish PostgreSQL Database Connection](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#establish-postgresql-database-connection)<br>
-    6.1. [Accessing PostgreSQL via Terminal](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#accessing-postgresql-via-terminal)<br>
-    6.2. [Adding Server on pgAdmin 4](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#adding-server-on-pgadmin-4)<br>
-    6.3. [Connecting Node App to Postgres](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#connecting-node-app-to-postgres)<br>
+   6.1. [Accessing PostgreSQL via Terminal](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#accessing-postgresql-via-terminal)<br>
+   6.2. [Adding Server on pgAdmin 4](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#adding-server-on-pgadmin-4)<br>
+   6.3. [Connecting Node App to Postgres](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#connecting-node-app-to-postgres)<br>
 7. [Sequelize Set-Up](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#sequelize-set-up)
 8. [Configure Asynchronous Routes in Server (Sequelize & node-postgres)](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#configure-asynchronous-routes-in-server-sequelize--node-postgres)
 9. [Refactoring & Project Structure](https://github.com/rtasalem/hapi-pg-docker/blob/main/DOCS.md#refactoring--project-structure)
@@ -207,7 +207,7 @@ await receiveFromQueue()
 await receiveFromTopic()
 ```
 
-**Update:** At a point where I feel the issue has been fixed. Sending messages via the test client will of course save the messages to the Service Bus queue (this is _before_ running the Docker container). Once the application is started via Docker, the console should log that the messages were received by the queue, but also that they have now been saved to the database and when running a select statement via pgAdmin, I found this was the case. Not perfect, as I was aiming to send and save to the database simultaneously i.e. while the Docker container was running, you send a message, check that it's in the queue, then check Postgres to see that it has also been saved to the database. With the current set up, messages are sent to the queue first and the once the Docker container is started, those same messages are consumed and removed from the queue but are saved to the database. Maybe it would be worth coming back to try and achieve the initial aim, but for now this will do.<br><br>
+**Update:** At a point where I feel the issue has been fixed. Sending messages via the test client will of course save the messages to the Service Bus queue (this is _before_ running the Docker container). Once the application is started via Docker, the console should log that the messages were received by the queue, but also that they have now been saved to the database. When running a select statement via pgAdmin, I found this was the case. Inititally I was aiming to send and save to the database simultaneously i.e. while the Docker container was running, you send a message, check that it's in the queue, then check Postgres to see that it has also been saved to the database. With the current set up, messages are sent to the queue first and the once the Docker container is started, those same messages are consumed and removed from the queue but saved to the database.<br><br>
 Note that when connecting to the Postgres client, the query has to be set up in the following way:
 
 ```
